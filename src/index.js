@@ -25,36 +25,14 @@ class Square extends React.Component {
 class Board extends React.Component {
   renderSquare(i) {
     return <Square 
-		value={this.state.squares[i]} 
-		onClick={() => this.handleClick(i)}
+		value={this.props.squares[i]}
+        onClick={() => this.props.onClick(i)}
     />;
-  }
-  constructor() {
-    super();
- //    const winStyle = {
- //  		color: 'blue',
- //  		,
-	// };
-    this.state = {
-      squares: Array(9).fill(null),
-      xIsNext: true,
-    };
   }
 
   render() {
-    const winner = calculateWinner(this.state.squares);
-    let status;
-    if (winner) {
-      status = 'Winner: ' + winner;
-      $('#status').addClass('animated tada');
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    }
-
     return (
-    	<div> 
-			<div id = "status" className="status">{status}</div>
-			<div className="game-board">
+		<div className="game-board">
 			<div className="board-row">
 				{this.renderSquare(0)}
 				{this.renderSquare(1)}
@@ -70,25 +48,9 @@ class Board extends React.Component {
 				{this.renderSquare(7)}
 				{this.renderSquare(8)}
 			</div>
-			</div>
-    	</div>
+		</div>
+    	
     );
-  }
-  handleClick(i) {
-    const squares = this.state.squares.slice();
-    if (calculateWinner(squares) || squares[i]) {
-    	this.setState({
-    		squares: Array(9).fill(null),
-      		xIsNext: true,
-    	})
-    	$('#status').removeClass('animated tada');
-      return;
-    }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
-    this.setState({
-      squares: squares,
-      xIsNext: !this.state.xIsNext,
-    });
   }
   
 }
@@ -101,16 +63,67 @@ class Game extends React.Component {
         squares: Array(9).fill(null),
       }],
       xIsNext: true,
+      isWin : false,
     };
   }
   render() {
+  	const history = this.state.history;
+    const current = history[history.length - 1];
+    const winner = calculateWinner(current.squares);
+    let status;
+    if (winner) {
+      status = 'Winner: ' + winner;
+      $('#status').addClass('animated tada');
+      
+    } else {
+      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+    }
     return (
-      <div className="game">
-        
-        <Board />
+      <div className = "game">
+        <div id = "status" className="status">{status}</div>
+         <Board
+	        squares={current.squares}
+	        onClick={(i) => this.handleClick(i)}
+		/>
         
       </div>
     );
+  }
+    handleClick(i) {
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    const squares = current.squares.slice();
+    if(!squares[i]){
+    	if (calculateWinner(squares) || squares[i]) {
+    		this.setState({
+			  history: [{
+			    squares: Array(9).fill(null),
+			  }],
+			  xIsNext: true,
+			});
+			$('#status').removeClass('animated tada');
+		  return;
+		}
+		squares[i] = this.state.xIsNext ? 'X' : 'O';
+		this.setState({
+		  history: history.concat([{
+		    squares: squares,
+		  }]),
+		  xIsNext: !this.state.xIsNext,
+		});
+    }
+    else{
+    	if(calculateWinner(squares)){
+    		this.setState({
+			  history: [{
+			    squares: Array(9).fill(null),
+			  }],
+			  xIsNext: true,
+			});
+			$('#status').removeClass('animated tada');
+    		return;
+    	}
+    }
   }
 }
 

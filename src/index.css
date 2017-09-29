@@ -19,7 +19,8 @@ ol, ul {
   margin-bottom: 10px;
   font-size: 30px;
   color: #51E7B9;
-  width: 540px;
+  width: auto;
+  height: auto;
   text-align: center;
 }
 
@@ -47,9 +48,10 @@ ol, ul {
 }
 
 .game {
-  display: flex;
-  flex-direction: row;
+  display: table;
+  margin: 0 auto;
 }
 .game-board{
-	box-shadow: 20px 20px 10px black
+	box-shadow: 20px 20px 10px black;
 }
+
