@@ -113,7 +113,7 @@ class Game extends React.Component {
 		});
     }
     else{
-    	if(calculateWinner(squares)){
+    	if(calculateWinner(squares) || checkSquares(squares)){
     		this.setState({
 			  history: [{
 			    squares: Array(9).fill(null),
@@ -152,15 +152,11 @@ function calculateWinner(squares) {
 	}
 	return null;
 }
+function checkSquares(squares){
+  for (let i = 0; i<squares.length ; i++){
+    if(squares[i] == null)
+      return false;
+  }
+  return true;
+}
 
-
-
-
-/// import React from 'react';
-// import ReactDOM from 'react-dom';
-// import './index.css';
-// import App from './App';
-// import registerServiceWorker from './registerServiceWorker';
-
-// ReactDOM.render(<App />, document.getElementById('root'));
-// registerServiceWorker();
